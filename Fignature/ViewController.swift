@@ -59,9 +59,11 @@ class ViewController: UIViewController {
     }
     
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
-        dispatch_async(dispatch_get_main_queue(), {
-            UIAlertView(title: "Succes", message: "This image has been saved to your Camera Roll successfully", delegate: self, cancelButtonTitle: "Close").show()
-        })
+        if error != nil {
+            UIAlertView(title: "Error", message: "Image could not be saved.Please try again", delegate: self, cancelButtonTitle: "Close").show()
+        } else {
+            UIAlertView(title: "Succes", message: "Image has been saved to your Camera Roll successfully", delegate: self, cancelButtonTitle: "Close").show()
+        }
     }
     
     @IBAction func colorSelected(sender: UIButton) {
