@@ -108,8 +108,8 @@ class ViewController: UIViewController {
         view.addSubview(redButton)
         
         //Canvas constraints
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Left, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Right, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0))
         view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0))
         
