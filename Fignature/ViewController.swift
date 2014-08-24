@@ -10,13 +10,14 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let brush: CGFloat = 1.0
+    let brush: CGFloat = 1.5
     
     var lastPoint: CGPoint!
     var red: CGFloat!
     var green: CGFloat!
     var blue: CGFloat!
     var lastClickedButton: UIView!
+    var path: UIBezierPath!
     
     //Controls
     var imageCanvasView: UIImageView!
@@ -30,6 +31,14 @@ class ViewController: UIViewController {
         red = 0.0/255.0
         green = 0.0/255.0
         blue = 0.0/255.0
+        
+        path = UIBezierPath()
+        path.lineWidth = brush
+        
+        var pan = UIPanGestureRecognizer(target: self, action: Selector("pan:"))
+        pan.maximumNumberOfTouches = 1
+        pan.minimumNumberOfTouches = 1
+        view.addGestureRecognizer(pan)
         
         makeLayout()
     }
@@ -71,7 +80,7 @@ class ViewController: UIViewController {
         blackButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
         
         blackButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        blackButton.frame = CGRectMake(0, 0, 40, 40)
+        blackButton.frame = CGRectMake(0, 0, 50, 50)
         blackButton.backgroundColor = UIColor.blackColor()
         blackButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
         blackButton.tag = 0
@@ -85,7 +94,7 @@ class ViewController: UIViewController {
         blueButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
         
         blueButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        blueButton.frame = CGRectMake(0, 0, 40, 40)
+        blueButton.frame = CGRectMake(0, 0, 50, 50)
         blueButton.backgroundColor = UIColor.blueColor()
         blueButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
         blueButton.tag = 1
@@ -98,7 +107,7 @@ class ViewController: UIViewController {
         redButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
         
         redButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        redButton.frame = CGRectMake(0, 0, 40, 40)
+        redButton.frame = CGRectMake(0, 0, 50, 50)
         redButton.backgroundColor = UIColor.redColor()
         redButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
         redButton.tag = 2
@@ -145,6 +154,7 @@ class ViewController: UIViewController {
     
     @IBAction func reset(sender: UIButton) {
         self.imageCanvasView.image = nil
+        path = UIBezierPath()
     }
     
     @IBAction func save(sender: UIButton) {
@@ -169,21 +179,25 @@ class ViewController: UIViewController {
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
+            path = UIBezierPath()
             doBorderButton(blackButton)
         case 1:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 255.0/255.0
+            path = UIBezierPath()
             doBorderButton(blueButton)
         case 2:
             red = 255.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
+            path = UIBezierPath()
             doBorderButton(redButton)
         default:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
+            path = UIBezierPath()
             doBorderButton(blackButton)
         }
     }
@@ -200,61 +214,40 @@ class ViewController: UIViewController {
         lastClickedButton = button
     }
     
-    override func touchesBegan(touches: NSSet!, withEvent event: UIEvent!) {
-        for touch: AnyObject in touches {
-            lastPoint = touch.locationInView(view)
+    func pan(pan: UIGestureRecognizer) {
+        var currentPoint = pan.locationInView(view)
+        
+        if pan.state == UIGestureRecognizerState.Began {
+            
+            path.moveToPoint(currentPoint)
+            
+            lastPoint = currentPoint
+            
+        } else if pan.state == UIGestureRecognizerState.Changed {
+            
+            var midPoint = midpoint(p0: lastPoint, p1: currentPoint)
+            
+            path.addQuadCurveToPoint(midPoint, controlPoint: lastPoint)
+            
+            UIGraphicsBeginImageContext(view.bounds.size)
+            
+            imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
+            UIColor(red: red, green: green, blue: blue, alpha: 1.0).setStroke()
+            path.stroke()
+            imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
+            
+            UIGraphicsEndImageContext()
+            
+            lastPoint = currentPoint
         }
+        
+        view.setNeedsDisplay()
     }
     
-    override func touchesMoved(touches: NSSet!, withEvent event: UIEvent!) {
-        var currentLocation = CGPointMake(0.0, 0.0)
-        
-        for touch: AnyObject in touches {
-            currentLocation = touch.locationInView(view)
-        }
-        
-        UIGraphicsBeginImageContext(view.bounds.size)
-        
-        var ctx :CGContextRef = UIGraphicsGetCurrentContext()
-        
-        self.imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
-        CGContextSetLineCap(ctx, kCGLineCapRound)
-        CGContextSetLineWidth(ctx, brush)
-        CGContextSetRGBStrokeColor(ctx, red, green, blue, 1.0)
-        CGContextBeginPath(ctx)
-        CGContextMoveToPoint(ctx, lastPoint.x, lastPoint.y)
-        CGContextAddLineToPoint(ctx, currentLocation.x, currentLocation.y)
-        CGContextStrokePath(ctx)
-        self.imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        lastPoint = currentLocation
+    func midpoint(#p0: CGPoint, p1: CGPoint) -> CGPoint {
+        return CGPoint(x: (p0.x + p1.x) / 2.0, y: (p0.y + p1.y) / 2.0)
+            
     }
     
-    override func touchesEnded(touches: NSSet!, withEvent event: UIEvent!) {
-        var currentLocation = CGPointMake(0.0, 0.0)
-        
-        for touch: AnyObject in touches {
-            currentLocation = touch.locationInView(view)
-        }
-        
-        UIGraphicsBeginImageContext(view.bounds.size)
-        
-        var ctx :CGContextRef = UIGraphicsGetCurrentContext()
-        
-        self.imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
-        CGContextSetLineCap(ctx, kCGLineCapRound)
-        CGContextSetLineWidth(ctx, brush)
-        CGContextSetRGBStrokeColor(ctx, red, green, blue, 1.0)
-        CGContextBeginPath(ctx)
-        CGContextMoveToPoint(ctx, lastPoint.x, lastPoint.y)
-        CGContextAddLineToPoint(ctx, currentLocation.x, currentLocation.y)
-        CGContextStrokePath(ctx)
-        self.imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        
-        lastPoint = currentLocation
-    }
-
 }
 
