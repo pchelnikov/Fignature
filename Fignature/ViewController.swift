@@ -179,27 +179,25 @@ class ViewController: UIViewController {
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
-            path = UIBezierPath()
             doBorderButton(blackButton)
         case 1:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 255.0/255.0
-            path = UIBezierPath()
             doBorderButton(blueButton)
         case 2:
             red = 255.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
-            path = UIBezierPath()
             doBorderButton(redButton)
         default:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
-            path = UIBezierPath()
             doBorderButton(blackButton)
         }
+        
+        path = UIBezierPath()
     }
     
     func doBorderButton(button: UIButton) {
