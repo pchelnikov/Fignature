@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		0581A5E319A39BED00E9A008 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0581A5E219A39BED00E9A008 /* AppDelegate.swift */; };
 		0581A5E519A39BED00E9A008 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0581A5E419A39BED00E9A008 /* ViewController.swift */; };
-		0581A5E819A39BED00E9A008 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0581A5E619A39BED00E9A008 /* Main.storyboard */; };
 		0581A5EA19A39BED00E9A008 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0581A5E919A39BED00E9A008 /* Images.xcassets */; };
 		0581A5F619A39BED00E9A008 /* FignatureTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0581A5F519A39BED00E9A008 /* FignatureTests.swift */; };
 		05CF599D19A3F0D10021F158 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 05CF599C19A3F0D10021F158 /* .gitignore */; };
+		C6AE05B919ABD81600B560B8 /* SmoothSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6AE05B819ABD81600B560B8 /* SmoothSignatureView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,12 +30,12 @@
 		0581A5E119A39BED00E9A008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0581A5E219A39BED00E9A008 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		0581A5E419A39BED00E9A008 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		0581A5E719A39BED00E9A008 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		0581A5E919A39BED00E9A008 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		0581A5EF19A39BED00E9A008 /* FignatureTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FignatureTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0581A5F419A39BED00E9A008 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0581A5F519A39BED00E9A008 /* FignatureTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FignatureTests.swift; sourceTree = "<group>"; };
 		05CF599C19A3F0D10021F158 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		C6AE05B819ABD81600B560B8 /* SmoothSignatureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SmoothSignatureView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,7 +80,7 @@
 			children = (
 				0581A5E219A39BED00E9A008 /* AppDelegate.swift */,
 				0581A5E419A39BED00E9A008 /* ViewController.swift */,
-				0581A5E619A39BED00E9A008 /* Main.storyboard */,
+				C6AE05B819ABD81600B560B8 /* SmoothSignatureView.swift */,
 				0581A5E919A39BED00E9A008 /* Images.xcassets */,
 				0581A5E019A39BED00E9A008 /* Supporting Files */,
 			);
@@ -193,7 +193,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0581A5E819A39BED00E9A008 /* Main.storyboard in Resources */,
 				05CF599D19A3F0D10021F158 /* .gitignore in Resources */,
 				0581A5EA19A39BED00E9A008 /* Images.xcassets in Resources */,
 			);
@@ -215,6 +214,7 @@
 			files = (
 				0581A5E519A39BED00E9A008 /* ViewController.swift in Sources */,
 				0581A5E319A39BED00E9A008 /* AppDelegate.swift in Sources */,
+				C6AE05B919ABD81600B560B8 /* SmoothSignatureView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -235,17 +235,6 @@
 			targetProxy = 0581A5F019A39BED00E9A008 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin PBXVariantGroup section */
-		0581A5E619A39BED00E9A008 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				0581A5E719A39BED00E9A008 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		0581A5F719A39BED00E9A008 /* Debug */ = {
@@ -333,7 +322,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = Fignature/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -346,7 +335,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				INFOPLIST_FILE = Fignature/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

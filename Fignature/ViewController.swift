@@ -32,16 +32,24 @@ class ViewController: UIViewController {
         green = 0.0/255.0
         blue = 0.0/255.0
         
-        path = UIBezierPath()
-        path.lineWidth = brush
+//        createNewPath()
+//        
+//        var pan = UIPanGestureRecognizer(target: self, action: Selector("pan:"))
+//        pan.maximumNumberOfTouches = 1
+//        pan.minimumNumberOfTouches = 1
+//        view.addGestureRecognizer(pan)
+//        
+//        makeLayout()
         
-        var pan = UIPanGestureRecognizer(target: self, action: Selector("pan:"))
-        pan.maximumNumberOfTouches = 1
-        pan.minimumNumberOfTouches = 1
-        view.addGestureRecognizer(pan)
-        
+        view = SmoothSignatureView(frame: view.bounds)
+
         makeLayout()
     }
+    
+//    func createNewPath() {
+//        path = UIBezierPath()
+//        path.lineWidth = brush
+//    }
     
     func makeLayout() {
         view.backgroundColor = UIColor.whiteColor()
@@ -60,6 +68,7 @@ class ViewController: UIViewController {
         
         buttonReset.setTranslatesAutoresizingMaskIntoConstraints(false)
         buttonReset.frame = CGRectMake(16, 20, 40, 30)
+        buttonReset.titleLabel.font = UIFont.systemFontOfSize(17)
         buttonReset.setTitle("Reset", forState: UIControlState.Normal)
         buttonReset.addTarget(self, action: Selector("reset:"), forControlEvents: UIControlEvents.TouchUpInside)
         buttonReset.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
@@ -70,6 +79,7 @@ class ViewController: UIViewController {
         let buttonSave = UIButton.buttonWithType(UIButtonType.System) as UIButton
         
         buttonSave.setTranslatesAutoresizingMaskIntoConstraints(false)
+        buttonSave.titleLabel.font = UIFont.systemFontOfSize(17)
         buttonSave.setTitle("Save", forState: UIControlState.Normal)
         buttonSave.addTarget(self, action: Selector("save:"), forControlEvents: UIControlEvents.TouchUpInside)
         buttonSave.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
@@ -144,7 +154,8 @@ class ViewController: UIViewController {
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.AllButUpsideDown.toRaw())
+        //return Int(UIInterfaceOrientationMask.AllButUpsideDown.toRaw())
+        return Int(UIInterfaceOrientationMask.Portrait.toRaw())
     }
 
     override func didReceiveMemoryWarning() {
@@ -152,12 +163,12 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func reset(sender: UIButton) {
+    func reset(sender: UIButton) {
         self.imageCanvasView.image = nil
-        path = UIBezierPath()
+        //createNewPath()
     }
     
-    @IBAction func save(sender: UIButton) {
+    func save(sender: UIButton) {
         UIGraphicsBeginImageContextWithOptions(self.imageCanvasView.bounds.size, false, 0.0)
         self.imageCanvasView.image?.drawInRect(CGRectMake(0, 0, self.imageCanvasView.frame.size.width, self.imageCanvasView.frame.size.height))
         var saveImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -173,7 +184,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func colorSelected(sender: UIButton) {
+    func colorSelected(sender: UIButton) {
         switch sender.tag {
         case 0:
             red = 0.0/255.0
@@ -197,7 +208,7 @@ class ViewController: UIViewController {
             doBorderButton(blackButton)
         }
         
-        path = UIBezierPath()
+        //createNewPath()
     }
     
     func doBorderButton(button: UIButton) {
@@ -212,40 +223,40 @@ class ViewController: UIViewController {
         lastClickedButton = button
     }
     
-    func pan(pan: UIGestureRecognizer) {
-        var currentPoint = pan.locationInView(view)
-        
-        if pan.state == UIGestureRecognizerState.Began {
-            
-            path.moveToPoint(currentPoint)
-            
-            lastPoint = currentPoint
-            
-        } else if pan.state == UIGestureRecognizerState.Changed {
-            
-            var midPoint = midpoint(p0: lastPoint, p1: currentPoint)
-            
-            path.addQuadCurveToPoint(midPoint, controlPoint: lastPoint)
-            
-            UIGraphicsBeginImageContext(view.bounds.size)
-            
-            imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
-            UIColor(red: red, green: green, blue: blue, alpha: 1.0).setStroke()
-            path.stroke()
-            imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
-            
-            UIGraphicsEndImageContext()
-            
-            lastPoint = currentPoint
-        }
-        
-        view.setNeedsDisplay()
-    }
-    
-    func midpoint(#p0: CGPoint, p1: CGPoint) -> CGPoint {
-        return CGPoint(x: (p0.x + p1.x) / 2.0, y: (p0.y + p1.y) / 2.0)
-            
-    }
+//    func pan(pan: UIGestureRecognizer) {
+//        var currentPoint = pan.locationInView(view)
+//        
+//        if pan.state == UIGestureRecognizerState.Began {
+//            
+//            path.moveToPoint(currentPoint)
+//            
+//            lastPoint = currentPoint
+//            
+//        } else if pan.state == UIGestureRecognizerState.Changed {
+//            
+//            var midPoint = midpoint(p0: lastPoint, p1: currentPoint)
+//            
+//            path.addQuadCurveToPoint(midPoint, controlPoint: lastPoint)
+//            
+//            UIGraphicsBeginImageContext(view.bounds.size)
+//            
+//            imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
+//            UIColor(red: red, green: green, blue: blue, alpha: 1.0).setStroke()
+//            path.stroke()
+//            imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
+//            
+//            UIGraphicsEndImageContext()
+//            
+//            lastPoint = currentPoint
+//        }
+//        
+//        view.setNeedsDisplay()
+//    }
+//    
+//    func midpoint(#p0: CGPoint, p1: CGPoint) -> CGPoint {
+//        return CGPoint(x: (p0.x + p1.x) / 2.0, y: (p0.y + p1.y) / 2.0)
+//            
+//    }
     
 }
 
