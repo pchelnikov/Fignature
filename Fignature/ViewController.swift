@@ -12,12 +12,14 @@ class ViewController: UIViewController {
     
     let brush: CGFloat = 1.5
     
-    var lastPoint: CGPoint!
+    var canvasView: SmoothSignatureView!
+    
+    //var lastPoint: CGPoint!
     var red: CGFloat!
     var green: CGFloat!
     var blue: CGFloat!
     var lastClickedButton: UIView!
-    var path: UIBezierPath!
+    //var path: UIBezierPath!
     
     //Controls
     var imageCanvasView: UIImageView!
@@ -34,14 +36,14 @@ class ViewController: UIViewController {
         
 //        createNewPath()
 //        
-//        var pan = UIPanGestureRecognizer(target: self, action: Selector("pan:"))
+//        var pan = UIPanGestureRecognizer(target: self, action: "pan:")
 //        pan.maximumNumberOfTouches = 1
 //        pan.minimumNumberOfTouches = 1
 //        view.addGestureRecognizer(pan)
 //        
 //        makeLayout()
         
-        view = SmoothSignatureView(frame: view.bounds)
+        //view = SmoothSignatureView(frame: view.bounds)
 
         makeLayout()
     }
@@ -54,46 +56,47 @@ class ViewController: UIViewController {
     func makeLayout() {
         view.backgroundColor = UIColor.whiteColor()
         
+        canvasView = SmoothSignatureView(frame: view.bounds)
+        view.addSubview(canvasView)
+        
         //Canvas image
         imageCanvasView = UIImageView()
         
         imageCanvasView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        imageCanvasView.contentMode = UIViewContentMode.ScaleToFill
+        imageCanvasView.contentMode = .ScaleToFill
         //imageCanvasView.backgroundColor = UIColor.grayColor()
         
         view.addSubview(imageCanvasView)
         
         //Reset button
-        let buttonReset = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        let buttonReset = UIButton.buttonWithType(.System) as UIButton
         
         buttonReset.setTranslatesAutoresizingMaskIntoConstraints(false)
-        buttonReset.frame = CGRectMake(16, 20, 40, 30)
+        //buttonReset.frame = CGRectMake(16, 20, 40, 30)
         buttonReset.titleLabel.font = UIFont.systemFontOfSize(17)
-        buttonReset.setTitle("Reset", forState: UIControlState.Normal)
-        buttonReset.addTarget(self, action: Selector("reset:"), forControlEvents: UIControlEvents.TouchUpInside)
-        buttonReset.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        buttonReset.setTitle("Reset", forState: .Normal)
+        buttonReset.addTarget(self, action: "reset:", forControlEvents: .TouchUpInside)
+        buttonReset.setTitleColor(UIColor.blueColor(), forState: .Normal)
         
         view.addSubview(buttonReset)
         
         //Save button
-        let buttonSave = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        let buttonSave = UIButton.buttonWithType(.System) as UIButton
         
         buttonSave.setTranslatesAutoresizingMaskIntoConstraints(false)
         buttonSave.titleLabel.font = UIFont.systemFontOfSize(17)
-        buttonSave.setTitle("Save", forState: UIControlState.Normal)
-        buttonSave.addTarget(self, action: Selector("save:"), forControlEvents: UIControlEvents.TouchUpInside)
-        buttonSave.setTitleColor(UIColor.blueColor(), forState: UIControlState.Normal)
+        buttonSave.setTitle("Save", forState: .Normal)
+        buttonSave.addTarget(self, action: "save:", forControlEvents: .TouchUpInside)
+        buttonSave.setTitleColor(UIColor.blueColor(), forState: .Normal)
         
         view.addSubview(buttonSave)
         
         //Black button
-        blackButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        blackButton = UIButton.buttonWithType(.System) as UIButton
         
         blackButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        blackButton.frame = CGRectMake(0, 0, 50, 50)
         blackButton.backgroundColor = UIColor.blackColor()
-        blackButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
-        blackButton.tag = 0
+        blackButton.addTarget(self, action: "colorSelected:", forControlEvents: .TouchUpInside)
         blackButton.layer.cornerRadius = 15
         blackButton.layer.masksToBounds = true
         doBorderButton(blackButton)
@@ -101,56 +104,64 @@ class ViewController: UIViewController {
         view.addSubview(blackButton)
         
         //Blue button
-        blueButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        blueButton = UIButton.buttonWithType(.System) as UIButton
         
         blueButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        blueButton.frame = CGRectMake(0, 0, 50, 50)
         blueButton.backgroundColor = UIColor.blueColor()
-        blueButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
-        blueButton.tag = 1
+        blueButton.addTarget(self, action: "colorSelected:", forControlEvents: .TouchUpInside)
         blueButton.layer.cornerRadius = 15
         blueButton.layer.masksToBounds = true
         
         view.addSubview(blueButton)
         
         //Red button
-        redButton = UIButton.buttonWithType(UIButtonType.System) as UIButton
+        redButton = UIButton.buttonWithType(.System) as UIButton
         
         redButton.setTranslatesAutoresizingMaskIntoConstraints(false)
-        redButton.frame = CGRectMake(0, 0, 50, 50)
         redButton.backgroundColor = UIColor.redColor()
-        redButton.addTarget(self, action: Selector("colorSelected:"), forControlEvents: UIControlEvents.TouchUpInside)
-        redButton.tag = 2
+        redButton.addTarget(self, action: "colorSelected:", forControlEvents: .TouchUpInside)
         redButton.layer.cornerRadius = 15
         redButton.layer.masksToBounds = true
         
         view.addSubview(redButton)
         
         //Canvas constraints
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Trailing, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Top, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Bottom, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: 0))
         
         //Reset button constraints
-        view.addConstraint(NSLayoutConstraint(item: buttonReset, attribute: NSLayoutAttribute.Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: buttonReset, attribute: NSLayoutAttribute.Leading, relatedBy: .Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1, constant: 5))
+        view.addConstraint(NSLayoutConstraint(item: buttonReset, attribute: .Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: buttonReset, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1, constant: 5))
         
         //Save button constraints
-        view.addConstraint(NSLayoutConstraint(item: buttonSave, attribute: NSLayoutAttribute.Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: NSLayoutAttribute.Bottom, multiplier: 1, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: buttonSave, attribute: NSLayoutAttribute.Trailing, relatedBy: .Equal, toItem: view, attribute: NSLayoutAttribute.Trailing, multiplier: 1, constant: -5))
+        view.addConstraint(NSLayoutConstraint(item: buttonSave, attribute: .Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: buttonSave, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1, constant: -5))
         
         //Black button contraints
-        view.addConstraint(NSLayoutConstraint(item: blackButton, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: view, attribute: NSLayoutAttribute.Leading, multiplier: 1.0, constant: 5))
-        view.addConstraint(NSLayoutConstraint(item: blackButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: bottomLayoutGuide, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: -10))
+        view.addConstraint(NSLayoutConstraint(item: blackButton, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 5))
+        view.addConstraint(NSLayoutConstraint(item: blackButton, attribute: .Bottom, relatedBy: .Equal, toItem: bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: -10))
         
         //Blue button constraints
-        view.addConstraint(NSLayoutConstraint(item: blueButton, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: blackButton, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 10))
-        view.addConstraint(NSLayoutConstraint(item: blueButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: bottomLayoutGuide, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: -10))
+        view.addConstraint(NSLayoutConstraint(item: blueButton, attribute: .Leading, relatedBy: .Equal, toItem: blackButton, attribute: .Trailing, multiplier: 1.0, constant: 10))
+        view.addConstraint(NSLayoutConstraint(item: blueButton, attribute: .Bottom, relatedBy: .Equal, toItem: bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: -10))
         
         //Red button constraints
-        view.addConstraint(NSLayoutConstraint(item: redButton, attribute: NSLayoutAttribute.Leading, relatedBy: NSLayoutRelation.Equal, toItem: blueButton, attribute: NSLayoutAttribute.Trailing, multiplier: 1.0, constant: 10))
-        view.addConstraint(NSLayoutConstraint(item: redButton, attribute: NSLayoutAttribute.Bottom, relatedBy: NSLayoutRelation.Equal, toItem: bottomLayoutGuide, attribute: NSLayoutAttribute.Top, multiplier: 1.0, constant: -10))
+        view.addConstraint(NSLayoutConstraint(item: redButton, attribute: .Leading, relatedBy: .Equal, toItem: blueButton, attribute: .Trailing, multiplier: 1.0, constant: 10))
+        view.addConstraint(NSLayoutConstraint(item: redButton, attribute: .Bottom, relatedBy: .Equal, toItem: bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: -10))
+        
+        //Draw a line
+        let lineView: UIView = UIView()
+        
+        lineView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        lineView.backgroundColor = UIColor.blackColor()
+        view.addSubview(lineView)
+        
+        view.addConstraint(NSLayoutConstraint(item:lineView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 2))
+        view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 30))
+        view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: (view.bounds.height / 3.0) * -1))
+        view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1.0, constant: -30))
     }
     
     override func supportedInterfaceOrientations() -> Int {
@@ -160,7 +171,6 @@ class ViewController: UIViewController {
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func reset(sender: UIButton) {
@@ -173,7 +183,7 @@ class ViewController: UIViewController {
         self.imageCanvasView.image?.drawInRect(CGRectMake(0, 0, self.imageCanvasView.frame.size.width, self.imageCanvasView.frame.size.height))
         var saveImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        UIImageWriteToSavedPhotosAlbum(saveImage, self, Selector("image:didFinishSavingWithError:contextInfo:"), nil)
+        UIImageWriteToSavedPhotosAlbum(saveImage, self, "image:didFinishSavingWithError:contextInfo:", nil)
     }
     
     func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
@@ -185,18 +195,18 @@ class ViewController: UIViewController {
     }
     
     func colorSelected(sender: UIButton) {
-        switch sender.tag {
-        case 0:
+        switch sender {
+        case blackButton:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0
             doBorderButton(blackButton)
-        case 1:
+        case blueButton:
             red = 0.0/255.0
             green = 0.0/255.0
             blue = 255.0/255.0
             doBorderButton(blueButton)
-        case 2:
+        case redButton:
             red = 255.0/255.0
             green = 0.0/255.0
             blue = 0.0/255.0

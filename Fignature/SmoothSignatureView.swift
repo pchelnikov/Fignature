@@ -35,12 +35,12 @@ class SmoothSignatureView: UIView {
         
         drawingQueue = dispatch_queue_create("drawingQueue", nil)
         
-        var pan = UIPanGestureRecognizer(target: self, action: Selector("pan:"))
+        var pan = UIPanGestureRecognizer(target: self, action: "pan:")
         pan.maximumNumberOfTouches = 1
         pan.minimumNumberOfTouches = 1
         addGestureRecognizer(pan)
         
-        var tap = UITapGestureRecognizer(target: self, action: Selector("eraseDrawing:"))
+        var tap = UITapGestureRecognizer(target: self, action: "eraseDrawing:")
         tap.numberOfTapsRequired = 2
         addGestureRecognizer(tap)
     }
@@ -56,14 +56,14 @@ class SmoothSignatureView: UIView {
     
     func pan(pan: UIGestureRecognizer) {
         switch pan.state {
-        case UIGestureRecognizerState.Began:
+        case .Began:
             counter = 0
             bufIdx = 0
             
             points[0] = pan.locationInView(self)
             
             isFirstTouchPoint = true
-        case UIGestureRecognizerState.Changed:
+        case .Changed:
             var p: CGPoint = pan.locationInView(self)
             
             ++counter
@@ -141,19 +141,17 @@ class SmoothSignatureView: UIView {
                 points[1] = points[4]
                 counter = 1
             }
-        case UIGestureRecognizerState.Ended:
+        case .Ended:
             setNeedsDisplay()
-        case UIGestureRecognizerState.Cancelled:
+        case .Cancelled:
             setNeedsDisplay()
         default:
             setNeedsDisplay()
         }
     }
     
-    // Only override drawRect: if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
     override func drawRect(rect: CGRect)
-    {
+    {        
         incrementalImage?.drawInRect(rect)
     }
     
