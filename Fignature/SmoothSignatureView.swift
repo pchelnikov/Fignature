@@ -16,12 +16,13 @@ class SmoothSignatureView: UIView {
     
     var incrementalImage: UIImage!
     var points = [CGPoint](count: 5, repeatedValue: CGPoint(x: 0, y: 0))
-    var counter: Int = 0
     var pointsBuffer = [CGPoint](count: 100, repeatedValue: CGPoint(x: 0, y: 0))
+    var counter: Int = 0
     var bufIdx: Int = 0
     var drawingQueue: dispatch_queue_t!
     var isFirstTouchPoint: Bool = false
     var lastSegmentOfPrev: LineSegment!
+    var signatureColor: UIColor!
     
     struct LineSegment {
         var firstPoint: CGPoint
@@ -31,27 +32,37 @@ class SmoothSignatureView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        backgroundColor = UIColor.whiteColor()
         multipleTouchEnabled = false
         
+        signatureColor = UIColor.blackColor()
         drawingQueue = dispatch_queue_create("drawingQueue", nil)
         
         var pan = UIPanGestureRecognizer(target: self, action: "pan:")
         pan.maximumNumberOfTouches = 1
         pan.minimumNumberOfTouches = 1
         addGestureRecognizer(pan)
-        
-        var tap = UITapGestureRecognizer(target: self, action: "eraseDrawing:")
-        tap.numberOfTapsRequired = 2
-        addGestureRecognizer(tap)
     }
     
     required init(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func eraseDrawing(tap: UITapGestureRecognizer) {
+    func eraseDrawing() {
         incrementalImage = nil
         setNeedsDisplay()
+    }
+    
+    func save() {
+        UIImageWriteToSavedPhotosAlbum(incrementalImage, self, "image:didFinishSavingWithError:contextInfo:", nil)
+    }
+    
+    func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
+        if error != nil {
+            UIAlertView(title: "Error", message: "Image could not be saved.Please try again", delegate: self, cancelButtonTitle: "Close").show()
+        } else {
+            UIAlertView(title: "Succes", message: "Image has been saved to your Camera Roll successfully", delegate: self, cancelButtonTitle: "Close").show()
+        }
     }
     
     func pan(pan: UIGestureRecognizer) {
@@ -124,8 +135,8 @@ class SmoothSignatureView: UIView {
                     }
                     
                     self.incrementalImage?.drawAtPoint(CGPointZero)
-                    UIColor.blackColor().setStroke()
-                    UIColor.blackColor().setFill()
+                    self.signatureColor.setStroke()
+                    self.signatureColor.setFill()
                     offsetPath.stroke()
                     offsetPath.fill()
                     

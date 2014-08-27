@@ -13,16 +13,9 @@ class ViewController: UIViewController {
     let brush: CGFloat = 1.5
     
     var canvasView: SmoothSignatureView!
-    
-    //var lastPoint: CGPoint!
-    var red: CGFloat!
-    var green: CGFloat!
-    var blue: CGFloat!
     var lastClickedButton: UIView!
-    //var path: UIBezierPath!
     
     //Controls
-    var imageCanvasView: UIImageView!
     var blackButton: UIButton!
     var blueButton: UIButton!
     var redButton: UIButton!
@@ -30,43 +23,17 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        red = 0.0/255.0
-        green = 0.0/255.0
-        blue = 0.0/255.0
-        
-//        createNewPath()
-//        
-//        var pan = UIPanGestureRecognizer(target: self, action: "pan:")
-//        pan.maximumNumberOfTouches = 1
-//        pan.minimumNumberOfTouches = 1
-//        view.addGestureRecognizer(pan)
-//        
-//        makeLayout()
-        
-        //view = SmoothSignatureView(frame: view.bounds)
-
         makeLayout()
     }
-    
-//    func createNewPath() {
-//        path = UIBezierPath()
-//        path.lineWidth = brush
-//    }
     
     func makeLayout() {
         view.backgroundColor = UIColor.whiteColor()
         
+        //Canvas view
         canvasView = SmoothSignatureView(frame: view.bounds)
+        canvasView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        
         view.addSubview(canvasView)
-        
-        //Canvas image
-        imageCanvasView = UIImageView()
-        
-        imageCanvasView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        imageCanvasView.contentMode = .ScaleToFill
-        //imageCanvasView.backgroundColor = UIColor.grayColor()
-        
-        view.addSubview(imageCanvasView)
         
         //Reset button
         let buttonReset = UIButton.buttonWithType(.System) as UIButton
@@ -125,11 +92,19 @@ class ViewController: UIViewController {
         
         view.addSubview(redButton)
         
+        //Draw a line
+        let lineView: UIView = UIView()
+        
+        lineView.setTranslatesAutoresizingMaskIntoConstraints(false)
+        lineView.backgroundColor = UIColor.blackColor()
+        
+        view.addSubview(lineView)
+        
         //Canvas constraints
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0))
-        view.addConstraint(NSLayoutConstraint(item: imageCanvasView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: canvasView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: canvasView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: canvasView, attribute: .Top, relatedBy: .Equal, toItem: view, attribute: .Top, multiplier: 1.0, constant: 0))
+        view.addConstraint(NSLayoutConstraint(item: canvasView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: 0))
         
         //Reset button constraints
         view.addConstraint(NSLayoutConstraint(item: buttonReset, attribute: .Top, relatedBy: .Equal, toItem: topLayoutGuide, attribute: .Bottom, multiplier: 1, constant: 0))
@@ -151,22 +126,16 @@ class ViewController: UIViewController {
         view.addConstraint(NSLayoutConstraint(item: redButton, attribute: .Leading, relatedBy: .Equal, toItem: blueButton, attribute: .Trailing, multiplier: 1.0, constant: 10))
         view.addConstraint(NSLayoutConstraint(item: redButton, attribute: .Bottom, relatedBy: .Equal, toItem: bottomLayoutGuide, attribute: .Top, multiplier: 1.0, constant: -10))
         
-        //Draw a line
-        let lineView: UIView = UIView()
-        
-        lineView.setTranslatesAutoresizingMaskIntoConstraints(false)
-        lineView.backgroundColor = UIColor.blackColor()
-        view.addSubview(lineView)
-        
-        view.addConstraint(NSLayoutConstraint(item:lineView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 2))
+        //Line constraints
+        view.addConstraint(NSLayoutConstraint(item:lineView, attribute: .Height, relatedBy: .Equal, toItem: nil, attribute: .NotAnAttribute, multiplier: 1.0, constant: 1))
         view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Leading, relatedBy: .Equal, toItem: view, attribute: .Leading, multiplier: 1.0, constant: 30))
-        view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: (view.bounds.height / 3.0) * -1))
+        view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Bottom, relatedBy: .Equal, toItem: view, attribute: .Bottom, multiplier: 1.0, constant: (view.bounds.size.height / 4.0) * -1))
         view.addConstraint(NSLayoutConstraint(item: lineView, attribute: .Trailing, relatedBy: .Equal, toItem: view, attribute: .Trailing, multiplier: 1.0, constant: -30))
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        //return Int(UIInterfaceOrientationMask.AllButUpsideDown.toRaw())
-        return Int(UIInterfaceOrientationMask.Portrait.toRaw())
+        return Int(UIInterfaceOrientationMask.AllButUpsideDown.toRaw())
+        //return Int(UIInterfaceOrientationMask.Landscape.toRaw())
     }
 
     override func didReceiveMemoryWarning() {
@@ -174,51 +143,29 @@ class ViewController: UIViewController {
     }
     
     func reset(sender: UIButton) {
-        self.imageCanvasView.image = nil
-        //createNewPath()
+        canvasView.eraseDrawing()
+        canvasView.drawRect(canvasView.bounds)
     }
     
     func save(sender: UIButton) {
-        UIGraphicsBeginImageContextWithOptions(self.imageCanvasView.bounds.size, false, 0.0)
-        self.imageCanvasView.image?.drawInRect(CGRectMake(0, 0, self.imageCanvasView.frame.size.width, self.imageCanvasView.frame.size.height))
-        var saveImage = UIGraphicsGetImageFromCurrentImageContext()
-        UIGraphicsEndImageContext()
-        UIImageWriteToSavedPhotosAlbum(saveImage, self, "image:didFinishSavingWithError:contextInfo:", nil)
-    }
-    
-    func image(image: UIImage, didFinishSavingWithError error: NSErrorPointer, contextInfo: UnsafePointer<()>) {
-        if error != nil {
-            UIAlertView(title: "Error", message: "Image could not be saved.Please try again", delegate: self, cancelButtonTitle: "Close").show()
-        } else {
-            UIAlertView(title: "Succes", message: "Image has been saved to your Camera Roll successfully", delegate: self, cancelButtonTitle: "Close").show()
-        }
+        canvasView.save()
     }
     
     func colorSelected(sender: UIButton) {
         switch sender {
         case blackButton:
-            red = 0.0/255.0
-            green = 0.0/255.0
-            blue = 0.0/255.0
+            canvasView.signatureColor = UIColor.blackColor()
             doBorderButton(blackButton)
         case blueButton:
-            red = 0.0/255.0
-            green = 0.0/255.0
-            blue = 255.0/255.0
+            canvasView.signatureColor = UIColor.blueColor()
             doBorderButton(blueButton)
         case redButton:
-            red = 255.0/255.0
-            green = 0.0/255.0
-            blue = 0.0/255.0
+            canvasView.signatureColor = UIColor.redColor()
             doBorderButton(redButton)
         default:
-            red = 0.0/255.0
-            green = 0.0/255.0
-            blue = 0.0/255.0
+            canvasView.signatureColor = UIColor.blackColor()
             doBorderButton(blackButton)
         }
-        
-        //createNewPath()
     }
     
     func doBorderButton(button: UIButton) {
@@ -232,41 +179,6 @@ class ViewController: UIViewController {
         
         lastClickedButton = button
     }
-    
-//    func pan(pan: UIGestureRecognizer) {
-//        var currentPoint = pan.locationInView(view)
-//        
-//        if pan.state == UIGestureRecognizerState.Began {
-//            
-//            path.moveToPoint(currentPoint)
-//            
-//            lastPoint = currentPoint
-//            
-//        } else if pan.state == UIGestureRecognizerState.Changed {
-//            
-//            var midPoint = midpoint(p0: lastPoint, p1: currentPoint)
-//            
-//            path.addQuadCurveToPoint(midPoint, controlPoint: lastPoint)
-//            
-//            UIGraphicsBeginImageContext(view.bounds.size)
-//            
-//            imageCanvasView.image?.drawInRect(CGRectMake(0, 0, view.bounds.size.width, view.bounds.size.height))
-//            UIColor(red: red, green: green, blue: blue, alpha: 1.0).setStroke()
-//            path.stroke()
-//            imageCanvasView.image = UIGraphicsGetImageFromCurrentImageContext()
-//            
-//            UIGraphicsEndImageContext()
-//            
-//            lastPoint = currentPoint
-//        }
-//        
-//        view.setNeedsDisplay()
-//    }
-//    
-//    func midpoint(#p0: CGPoint, p1: CGPoint) -> CGPoint {
-//        return CGPoint(x: (p0.x + p1.x) / 2.0, y: (p0.y + p1.y) / 2.0)
-//            
-//    }
-    
+
 }
 
