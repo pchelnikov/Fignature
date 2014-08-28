@@ -10,8 +10,6 @@ import UIKit
 
 class ViewController: UIViewController {
     
-    let brush: CGFloat = 1.5
-    
     var canvasView: SmoothSignatureView!
     var lastClickedButton: UIView!
     
