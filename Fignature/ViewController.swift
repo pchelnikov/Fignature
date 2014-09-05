@@ -38,7 +38,7 @@ class ViewController: UIViewController {
         
         buttonReset.setTranslatesAutoresizingMaskIntoConstraints(false)
         //buttonReset.frame = CGRectMake(16, 20, 40, 30)
-        buttonReset.titleLabel.font = UIFont.systemFontOfSize(17)
+        buttonReset.titleLabel?.font = UIFont.systemFontOfSize(17)
         buttonReset.setTitle("Reset", forState: .Normal)
         buttonReset.addTarget(self, action: "reset:", forControlEvents: .TouchUpInside)
         buttonReset.setTitleColor(UIColor.blueColor(), forState: .Normal)
@@ -49,7 +49,7 @@ class ViewController: UIViewController {
         let buttonSave = UIButton.buttonWithType(.System) as UIButton
         
         buttonSave.setTranslatesAutoresizingMaskIntoConstraints(false)
-        buttonSave.titleLabel.font = UIFont.systemFontOfSize(17)
+        buttonSave.titleLabel?.font = UIFont.systemFontOfSize(17)
         buttonSave.setTitle("Save", forState: .Normal)
         buttonSave.addTarget(self, action: "save:", forControlEvents: .TouchUpInside)
         buttonSave.setTitleColor(UIColor.blueColor(), forState: .Normal)
