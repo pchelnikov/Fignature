@@ -132,7 +132,7 @@ class ViewController: UIViewController {
     }
     
     override func supportedInterfaceOrientations() -> Int {
-        return Int(UIInterfaceOrientationMask.AllButUpsideDown.toRaw())
+        return Int(UIInterfaceOrientationMask.AllButUpsideDown.rawValue)
         //return Int(UIInterfaceOrientationMask.Landscape.toRaw())
     }
 
